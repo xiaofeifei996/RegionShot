@@ -8,7 +8,7 @@ on:
       - "DEVELOPMENT_REPORT.md"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   package:
@@ -55,7 +55,7 @@ jobs:
         run: python3 Tests/check_url_action.py
       - name: Install signing tools
         run: brew install ldid xz
-      - name: Install pinned RootHide Theos and iOS 15.6 SDK
+      - name: Install pinned RootHide Theos and iOS 16.5 SDK
         run: |
           export THEOS="$RUNNER_TEMP/theos"
           echo "THEOS=$THEOS" >> "$GITHUB_ENV"
@@ -64,10 +64,10 @@ jobs:
           git -C "$THEOS" checkout 88506b2c22e9e07dd4ed055f23c9e398a117a2c7
           git -C "$THEOS" submodule update --init --recursive
           git clone --filter=blob:none --no-checkout https://github.com/theos/sdks.git "$RUNNER_TEMP/sdks"
-          git -C "$RUNNER_TEMP/sdks" sparse-checkout set iPhoneOS15.6.sdk
+          git -C "$RUNNER_TEMP/sdks" sparse-checkout set iPhoneOS16.5.sdk
           git -C "$RUNNER_TEMP/sdks" fetch origin 0222fd5413cf4b9af096f37b4621afa2688572f7
           git -C "$RUNNER_TEMP/sdks" checkout 0222fd5413cf4b9af096f37b4621afa2688572f7
-          cp -R "$RUNNER_TEMP/sdks/iPhoneOS15.6.sdk" "$THEOS/sdks/"
+          cp -R "$RUNNER_TEMP/sdks/iPhoneOS16.5.sdk" "$THEOS/sdks/"
       - name: Build package
         run: make clean package FINALPACKAGE=1
       - name: Verify installable Settings bundle
@@ -87,6 +87,14 @@ jobs:
           find .theos/_ -type f | grep -E 'RegionShot\.dylib|RegionShot\.plist'
       - uses: actions/upload-artifact@v4
         with:
-          name: RegionShot-roothide-arm64e
+          name: RegionShot-roothide-arm64e-ios16
           path: packages/*.deb
           if-no-files-found: error
+      - name: Publish iOS 16 package
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.7.50-ios16
+          name: RegionShot 0.7.50 for iOS 16+
+          files: packages/*.deb
+          fail_on_unmatched_files: true

@@ -1,5 +1,5 @@
 ARCHS = arm64e
-TARGET = iphone:clang:15.6:15.0
+TARGET = iphone:clang:latest:16.0
 THEOS_PACKAGE_SCHEME = roothide
 include $(THEOS)/makefiles/common.mk
 BUNDLE_NAME = RegionShotPreferences
