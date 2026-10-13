@@ -7,6 +7,6 @@ RegionShotPreferences_FILES = RSPreferences.m RSBehaviorSettings.m RSOptions.m .
 RegionShotPreferences_CFLAGS = -fobjc-arc -Wall -Wextra -Wno-unused-parameter
 RegionShotPreferences_FRAMEWORKS = UIKit Foundation PhotosUI UniformTypeIdentifiers Security
 RegionShotPreferences_LIBRARIES = roothide
-RegionShotPreferences_PRIVATE_FRAMEWORKS = Preferences
+RegionShotPreferences_LDFLAGS = -Wl,-undefined,dynamic_lookup
 RegionShotPreferences_INSTALL_PATH = /Library/PreferenceBundles
 include $(THEOS_MAKE_PATH)/bundle.mk
